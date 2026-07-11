@@ -1,0 +1,52 @@
+name: Deploy
+
+# Build and (optionally) deploy the playground to Cloudflare Pages
+# (playground.wickra.org). The build always runs and gates the workflow green;
+# the deploy step only runs when the Cloudflare secrets are present, so forks and
+# pre-provisioning pushes stay green without any credentials. Deployment uses
+# `npx wrangler` directly rather than a third-party deploy action (zizmor: avoid
+# unpinned/opaque third-party actions handling secrets).
+#
+# USER-GO: DNS, the Cloudflare Pages project, and the CLOUDFLARE_API_TOKEN /
+# CLOUDFLARE_ACCOUNT_ID secrets are provisioned by the maintainer. Until then
+# only the build job runs.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Job-level env so the deploy step's `if:` can test for the secrets'
+    # presence (a step cannot read its own step-level env in its `if:`).
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to Cloudflare Pages
+        if: ${{ github.ref == 'refs/heads/main' && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx --yes wrangler@4 pages deploy dist --project-name wickra-playground --branch main
