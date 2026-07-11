@@ -36,6 +36,36 @@ function presetSpecText(key: string): string {
   return JSON.stringify(preset.spec, null, 2)
 }
 
+/** UTF-8-safe base64 for the shareable `#spec=` permalink. */
+function toBase64(text: string): string {
+  const bytes = new TextEncoder().encode(text)
+  let binary = ''
+  for (const byte of bytes) binary += String.fromCharCode(byte)
+  return btoa(binary)
+}
+
+function fromBase64(b64: string): string {
+  const binary = atob(b64)
+  const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0))
+  return new TextDecoder().decode(bytes)
+}
+
+/** The spec carried in `location.hash` (`#spec=<base64>`), or null if absent/invalid. */
+function specFromHash(): string | null {
+  const match = /(?:^#|&)spec=([^&]+)/.exec(location.hash)
+  if (!match) return null
+  try {
+    return fromBase64(decodeURIComponent(match[1]))
+  } catch {
+    return null
+  }
+}
+
+/** Write the current spec into `location.hash` so the URL is a forkable share-link. */
+function syncHash(text: string): void {
+  location.hash = `spec=${encodeURIComponent(toBase64(text))}`
+}
+
 function validate(text: string): boolean {
   try {
     JSON.parse(text)
@@ -51,6 +81,7 @@ function validate(text: string): boolean {
 function onEdit(): void {
   localStorage.setItem(SPEC_STORE, specText.value)
   if (validate(specText.value)) {
+    syncHash(specText.value)
     emit('spec-changed', specText.value)
   }
 }
@@ -74,7 +105,9 @@ function resetToPreset(): void {
 onMounted(() => {
   const savedPreset = localStorage.getItem(PRESET_STORE) ?? DEFAULT_KEY
   presetKey.value = PRESETS.some((p) => p.key === savedPreset) ? savedPreset : DEFAULT_KEY
-  specText.value = localStorage.getItem(SPEC_STORE) ?? presetSpecText(presetKey.value)
+  // A `#spec=` permalink wins over local storage so a shared link is reproducible.
+  specText.value =
+    specFromHash() ?? localStorage.getItem(SPEC_STORE) ?? presetSpecText(presetKey.value)
   onEdit()
   emit('preset-changed', presetKey.value)
 })

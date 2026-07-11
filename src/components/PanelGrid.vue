@@ -30,7 +30,7 @@ function onReport(payload: { id: string; report: string | null }): void {
         @report="onReport"
       />
     </div>
-    <DiffView :reports="reports" />
+    <DiffView :reports="reports" :spec-json="specJson" :candles-json="candlesJson" />
   </div>
 </template>
 
