@@ -1,0 +1,12 @@
+{
+  "spec_version": 1,
+  "symbol": "BTCUSDT",
+  "timeframe": "1h",
+  "indicators": {
+    "rsi": { "type": "Rsi", "params": [14] }
+  },
+  "entry": { "lt": ["rsi", 30.0] },
+  "exit": { "gt": ["rsi", 55.0] },
+  "sizing": { "type": "fixed_fraction", "fraction": 1.0 },
+  "costs": { "taker_bps": 10.0 }
+}

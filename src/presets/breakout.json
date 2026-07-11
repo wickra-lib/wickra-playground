@@ -1,0 +1,13 @@
+{
+  "spec_version": 1,
+  "symbol": "BTCUSDT",
+  "timeframe": "1h",
+  "indicators": {
+    "mid": { "type": "Sma", "params": [20] },
+    "atr": { "type": "Atr", "params": [14] }
+  },
+  "entry": { "gt": [{ "price": "close" }, { "add": ["mid", { "mul": [2.0, "atr"] }] }] },
+  "exit": { "lt": [{ "price": "close" }, "mid"] },
+  "sizing": { "type": "fixed_fraction", "fraction": 1.0 },
+  "costs": { "taker_bps": 10.0 }
+}

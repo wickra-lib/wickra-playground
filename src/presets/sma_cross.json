@@ -1,0 +1,13 @@
+{
+  "spec_version": 1,
+  "symbol": "BTCUSDT",
+  "timeframe": "1h",
+  "indicators": {
+    "fast": { "type": "Sma", "params": [10] },
+    "slow": { "type": "Sma", "params": [30] }
+  },
+  "entry": { "cross_above": ["fast", "slow"] },
+  "exit": { "cross_below": ["fast", "slow"] },
+  "sizing": { "type": "fixed_fraction", "fraction": 1.0 },
+  "costs": { "taker_bps": 10.0 }
+}
