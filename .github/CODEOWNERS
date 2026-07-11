@@ -1,0 +1,7 @@
+# Default owner for everything in this repository.
+*       @kingchenc
+
+# The runners and the diff/hash helpers are the byte-identity core of the
+# product — changes there get explicit review.
+/src/runner/   @kingchenc
+/src/lib/      @kingchenc

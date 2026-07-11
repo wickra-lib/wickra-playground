@@ -1,0 +1,30 @@
+version: 2
+updates:
+  # The Vue 3 + Vite + TypeScript app (root package.json).
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "deps(npm)"
+    groups:
+      npm:
+        patterns: ["*"]
+
+  # GitHub Actions — keeps the SHA-pinned actions current (Dependabot reads the
+  # version comment after each pinned SHA and bumps both together).
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "deps(actions)"
+    groups:
+      github-actions:
+        patterns: ["*"]
