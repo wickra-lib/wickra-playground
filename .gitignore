@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# TypeScript incremental build state
+*.tsbuildinfo
+
+# Local / editor
+*.local
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
