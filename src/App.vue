@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import DataSource from './components/DataSource.vue'
+import PanelGrid from './components/PanelGrid.vue'
+import SpecEditor from './components/SpecEditor.vue'
 import { getBacktest, initWasm } from './lib/wasm'
 
 type Status = 'loading' | 'ready' | 'error'
@@ -7,6 +10,10 @@ type Status = 'loading' | 'ready' | 'error'
 const status = ref<Status>('loading')
 const coreVersion = ref('')
 const errorMessage = ref('')
+
+const specJson = ref('')
+const candlesJson = ref('')
+const presetKey = ref('sma_cross')
 
 onMounted(async () => {
   try {
@@ -39,13 +46,8 @@ onMounted(async () => {
   </header>
 
   <main v-if="status === 'ready'">
-    <!-- The spec editor and data source (P-PG-2) and the language panel grid +
-         diff view (P-PG-3) mount here as they are implemented. -->
-    <section class="panel">
-      <p class="muted">
-        Edit a strategy spec, pick a candle dataset, and watch every language
-        panel compute the same report — the diff view proves byte-identity.
-      </p>
-    </section>
+    <SpecEditor @spec-changed="specJson = $event" @preset-changed="presetKey = $event" />
+    <DataSource :preset-key="presetKey" @candles-changed="candlesJson = $event" />
+    <PanelGrid :candles-json="candlesJson" :spec-json="specJson" />
   </main>
 </template>
