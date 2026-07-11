@@ -19,9 +19,12 @@ const state = ref<State>('idle')
 const pretty = ref('')
 const hash = ref('')
 const errorMessage = ref('')
+// Lazy runners (e.g. Python/Pyodide) stay disabled until the user opts in, so
+// their heavy runtime never blocks the automatic panels.
+const enabled = ref(!props.runner.lazy)
 
 async function run(): Promise<void> {
-  if (!props.candlesJson || !props.specJson) return
+  if (!enabled.value || !props.candlesJson || !props.specJson) return
   state.value = 'running'
   errorMessage.value = ''
   try {
@@ -43,6 +46,11 @@ async function run(): Promise<void> {
   }
 }
 
+function enable(): void {
+  enabled.value = true
+  run()
+}
+
 watch(() => [props.candlesJson, props.specJson], run, { immediate: true })
 </script>
 
@@ -55,6 +63,9 @@ watch(() => [props.candlesJson, props.specJson], run, { immediate: true })
       <span v-else-if="state === 'error'" class="status-bad">● error</span>
       <span v-else class="muted">idle</span>
     </p>
+    <button v-if="!enabled" type="button" @click="enable">
+      Enable {{ runner.label }} (loads ~30 MB)
+    </button>
     <p v-if="errorMessage" class="status-bad mono">{{ errorMessage }}</p>
     <pre v-else-if="pretty" class="report mono">{{ pretty }}</pre>
   </div>

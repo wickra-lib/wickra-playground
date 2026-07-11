@@ -9,6 +9,12 @@ export interface Runner {
   id: string
   /** Human label shown on the panel (e.g. `"Rust"`, `"JS"`). */
   label: string
+  /**
+   * When true, the panel is opt-in: it waits for the user to enable it before
+   * loading a heavy runtime (e.g. Pyodide ~30 MB), so it never blocks the other
+   * panels. Omitted/false runners run automatically.
+   */
+  lazy?: boolean
   /** Resolves once the runner's backing engine is loaded and ready. */
   ready(): Promise<void>
   /**
