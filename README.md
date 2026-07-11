@@ -65,6 +65,38 @@ npm run test     # the determinism + diff unit tests
 > (its release is gated). Until it publishes, `npm install` cannot resolve the
 > lockfile.
 
+## Presets
+
+Four ready-to-run `StrategySpec` presets ship in the editor, each with a bundled
+deterministic dataset:
+
+- **SMA crossover** — fast/slow simple-moving-average cross.
+- **RSI reversion** — buy oversold, sell into strength.
+- **MACD trend** — MACD line crossing the zero level.
+- **ATR breakout** — a Keltner-style breakout above an ATR band.
+
+Pick one from the dropdown, edit the JSON, and every panel re-runs live.
+
+## Use your own data
+
+The data source has three modes:
+
+- **Preset** — the bundled CSV for the selected preset (fully static).
+- **Upload** — drop in your own `ts,open,high,low,close,volume` CSV.
+- **Binance** — fetch recent klines for any symbol/interval directly from the
+  Binance public API (keyless; falls back to the `data-api.binance.vision`
+  mirror, then to the last-loaded dataset).
+
+Whatever the source, all panels receive the exact same candles — that single
+source is what makes the byte-diff meaningful.
+
+## Fork as template
+
+This repo is a GitHub **template**: click *Use this template* to spin up your own
+byte-identity playground against a fork of the engine, or as a starting point for
+any WASM-core-in-the-browser proof. The spec in the URL (`#spec=<base64>`) makes
+every run a shareable, forkable link.
+
 ## Project layout
 
 ```
