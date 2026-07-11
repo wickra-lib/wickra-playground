@@ -1,0 +1,6 @@
+# OSV-Scanner suppressions (VEX record). Consumed by OSV-Scanner and the
+# OpenSSF Scorecard Vulnerabilities check when scanning the committed
+# package-lock.json. Each entry would be an advisory assessed as not affecting
+# wickra-playground.
+#
+# No suppressions yet.
