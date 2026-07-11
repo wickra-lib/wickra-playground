@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import AboutCore from './components/AboutCore.vue'
 import DataSource from './components/DataSource.vue'
 import PanelGrid from './components/PanelGrid.vue'
 import SpecEditor from './components/SpecEditor.vue'
@@ -49,5 +50,6 @@ onMounted(async () => {
     <SpecEditor @spec-changed="specJson = $event" @preset-changed="presetKey = $event" />
     <DataSource :preset-key="presetKey" @candles-changed="candlesJson = $event" />
     <PanelGrid :candles-json="candlesJson" :spec-json="specJson" />
+    <AboutCore />
   </main>
 </template>
