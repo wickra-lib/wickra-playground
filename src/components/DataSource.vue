@@ -14,6 +14,7 @@ const count = ref(0)
 
 const binanceSymbol = ref('BTCUSDT')
 const binanceInterval = ref('1h')
+const binanceLimit = ref(500)
 
 function publish(candles: Candle[]): void {
   count.value = candles.length
@@ -49,10 +50,12 @@ async function onBinanceFetch(): Promise<void> {
   error.value = ''
   status.value = 'Fetching from Binance…'
   try {
-    publish(await fetchKlines(binanceSymbol.value, binanceInterval.value, 500))
-    status.value = `Binance: ${binanceSymbol.value} ${binanceInterval.value}`
+    publish(await fetchKlines(binanceSymbol.value, binanceInterval.value, binanceLimit.value))
+    status.value = `Binance: ${binanceSymbol.value} ${binanceInterval.value} (${binanceLimit.value})`
   } catch (e) {
-    error.value = `Binance fetch failed (a CORS fallback lands in a later phase): ${
+    // Keep the last-loaded candles (the preset dataset stays in play) so the
+    // panels still have a single shared source to run against.
+    error.value = `Binance fetch failed — keeping the current dataset. ${
       e instanceof Error ? e.message : String(e)
     }`
   }
@@ -87,6 +90,14 @@ watch(
     <div v-else-if="source === 'binance'" class="row">
       <input v-model="binanceSymbol" aria-label="Symbol" style="width: 8rem" />
       <input v-model="binanceInterval" aria-label="Interval" style="width: 5rem" />
+      <input
+        v-model.number="binanceLimit"
+        type="number"
+        min="1"
+        max="1000"
+        aria-label="Limit"
+        style="width: 5rem"
+      />
       <button type="button" @click="onBinanceFetch">Fetch</button>
     </div>
 

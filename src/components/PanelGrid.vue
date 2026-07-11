@@ -4,6 +4,9 @@ import { runners } from '../runner/registry'
 import DiffView from './DiffView.vue'
 import LangPanel from './LangPanel.vue'
 
+// Every panel receives the exact same `candlesJson` and `specJson` — one source
+// fans out to all runners. That single-source guarantee is what makes the
+// byte-diff meaningful: any divergence is the engine, never the input.
 defineProps<{
   candlesJson: string
   specJson: string
