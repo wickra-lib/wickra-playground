@@ -5,11 +5,12 @@
 [![Built on Wickra](https://img.shields.io/badge/built%20on-wickra-3b82f6)](https://github.com/wickra-lib/wickra)
 [![CI](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/ci.svg)](https://github.com/wickra-lib/wickra-playground/actions/workflows/ci.yml)
 [![CodeQL](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/codeql.svg)](https://github.com/wickra-lib/wickra-playground/actions/workflows/codeql.yml)
+[![License: MIT OR Apache-2.0](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/license.svg)](#license)
+[![OpenSSF Scorecard](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/scorecard.svg)](https://scorecard.dev/viewer/?uri=github.com/wickra-lib/wickra-playground)
+[![Docs](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/docs.svg)](https://wickra.org)
 [![Built with Vue 3 + Vite](https://img.shields.io/badge/built%20with-Vue%203%20%2B%20Vite-42b883?logo=vue.js&logoColor=white)](https://vite.dev)
 [![Zero backend](https://img.shields.io/badge/backend-zero-22c55e)](#how-it-works)
 [![Byte-identical across 4 languages](https://img.shields.io/badge/byte--identical-4%20languages-8b5cf6)](#determinism-is-the-product)
-[![License: MIT OR Apache-2.0](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/license.svg)](#license)
-[![Docs](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/docs.svg)](https://wickra.org)
 
 ---
 
@@ -132,3 +133,26 @@ deterministic result from the same spec and data — it makes no claim about the
 quality, profitability or future performance of any strategy. Trading carries
 risk; you are responsible for your own decisions. Everything runs in your own
 browser: no hosted service, no data collection, no warranty.
+
+---
+
+<p align="center">
+  <a href="https://github.com/wickra-lib/wickra-playground">
+    <img alt="GitHub stars" src="https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/stars.svg">
+  </a>
+  <a href="https://github.com/wickra-lib/wickra-playground/network/members">
+    <img alt="GitHub forks" src="https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/forks.svg">
+  </a>
+  <a href="https://github.com/wickra-lib/wickra-playground/issues">
+    <img alt="GitHub issues" src="https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/issues.svg">
+  </a>
+</p>
+
+<p align="center">
+  Built on <a href="https://github.com/wickra-lib/wickra">Wickra</a>. If it saved you time, the cheapest way to say thanks is to ⭐ the repo.
+</p>
+
+<p align="center">
+  <img alt="wickra-playground star history" width="640"
+       src="https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/star-history.svg">
+</p>
