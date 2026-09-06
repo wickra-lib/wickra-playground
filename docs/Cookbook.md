@@ -42,7 +42,7 @@ tolerated.
     "atr": { "type": "Atr", "params": [14] }
   },
   "entry": { "gt": [{ "price": "close" }, { "add": ["mid", { "mul": [2.0, "atr"] }] }] },
-  "exit":  { "lt": [{ "price": "close" }, "mid"] }
+  "exit": { "lt": [{ "price": "close" }, "mid"] }
 }
 ```
 

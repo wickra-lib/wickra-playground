@@ -13,10 +13,10 @@ and the third-party WebAssembly / npm dependencies the site bundles.
 Until the first stable release, only the latest `0.x` minor line receives
 security fixes.
 
-| Version | Supported |
-|---------|-----------|
+| Version      | Supported          |
+| ------------ | ------------------ |
 | latest `0.x` | :white_check_mark: |
-| older        | :x:       |
+| older        | :x:                |
 
 ## Reporting a vulnerability
 

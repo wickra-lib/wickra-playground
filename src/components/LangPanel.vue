@@ -59,7 +59,9 @@ watch(() => [props.candlesJson, props.specJson], run, { immediate: true })
     <h3>{{ runner.label }}</h3>
     <p class="mono">
       <span v-if="state === 'running'" class="muted">running…</span>
-      <span v-else-if="state === 'ok'" class="status-ok">● ok · sha256 {{ hash.slice(0, 12) }}…</span>
+      <span v-else-if="state === 'ok'" class="status-ok"
+        >● ok · sha256 {{ hash.slice(0, 12) }}…</span
+      >
       <span v-else-if="state === 'error'" class="status-bad">● error</span>
       <span v-else class="muted">idle</span>
     </p>

@@ -30,9 +30,9 @@ A **runner** (`src/runner/*.ts`) is one language/binding path implementing:
 interface Runner {
   id: string
   label: string
-  lazy?: boolean               // opt-in heavy runtimes (Pyodide)
+  lazy?: boolean // opt-in heavy runtimes (Pyodide)
   ready(): Promise<void>
-  run(candlesJson, specJson): Promise<string>  // raw report, verbatim
+  run(candlesJson, specJson): Promise<string> // raw report, verbatim
 }
 ```
 

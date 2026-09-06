@@ -24,7 +24,7 @@ Python — 100% in your browser, zero backend.**
 > ([wickra-backtest](https://github.com/wickra-lib/wickra-backtest)) that powers
 > the rest of the stack.
 
-Every other TA/backtest library *claims* cross-language consistency. The
+Every other TA/backtest library _claims_ cross-language consistency. The
 playground **proves it, live**: you write one `StrategySpec`, and the app runs it
 through the same Rust core compiled along four independent paths — Rust→WASM,
 JS-over-WASM, Go-over-WASM, and Python-over-Pyodide — then shows the four
@@ -93,7 +93,7 @@ source is what makes the byte-diff meaningful.
 
 ## Fork as template
 
-This repo is a GitHub **template**: click *Use this template* to spin up your own
+This repo is a GitHub **template**: click _Use this template_ to spin up your own
 byte-identity playground against a fork of the engine, or as a starting point for
 any WASM-core-in-the-browser proof. The spec in the URL (`#spec=<base64>`) makes
 every run a shareable, forkable link.

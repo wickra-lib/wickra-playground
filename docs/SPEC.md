@@ -9,21 +9,21 @@ wickra-backtest serde representation exactly (snake_case tags).
 
 ## Top-level fields
 
-| Field | Required | Type | Meaning |
-|-------|----------|------|---------|
-| `symbol` | yes | string | Traded symbol. |
-| `timeframe` | yes | string | Bar timeframe (e.g. `"1h"`). |
-| `indicators` | yes | map<string, IndicatorSpec> | Named indicator instances. |
-| `entry` | yes | Condition | Long-entry boolean. |
-| `exit` | yes | Condition | Long-exit boolean. |
-| `sizing` | yes | Sizing | Position sizing model. |
-| `spec_version` | no | number | Spec schema version. |
-| `ref_symbol` | no | string | Reference symbol (pairwise indicators). |
-| `short_entry` / `short_exit` | no | Condition | Short-side logic. |
-| `costs` | no | Costs | Fees + slippage + funding. |
-| `risk` | no | Risk | Stops, leverage, position caps. |
-| `execution` | no | Execution | Order type, fill timing, latency. |
-| `warmup` | no | number | Explicit warmup bars. |
+| Field                        | Required | Type                       | Meaning                                 |
+| ---------------------------- | -------- | -------------------------- | --------------------------------------- |
+| `symbol`                     | yes      | string                     | Traded symbol.                          |
+| `timeframe`                  | yes      | string                     | Bar timeframe (e.g. `"1h"`).            |
+| `indicators`                 | yes      | map<string, IndicatorSpec> | Named indicator instances.              |
+| `entry`                      | yes      | Condition                  | Long-entry boolean.                     |
+| `exit`                       | yes      | Condition                  | Long-exit boolean.                      |
+| `sizing`                     | yes      | Sizing                     | Position sizing model.                  |
+| `spec_version`               | no       | number                     | Spec schema version.                    |
+| `ref_symbol`                 | no       | string                     | Reference symbol (pairwise indicators). |
+| `short_entry` / `short_exit` | no       | Condition                  | Short-side logic.                       |
+| `costs`                      | no       | Costs                      | Fees + slippage + funding.              |
+| `risk`                       | no       | Risk                       | Stops, leverage, position caps.         |
+| `execution`                  | no       | Execution                  | Order type, fill timing, latency.       |
+| `warmup`                     | no       | number                     | Explicit warmup bars.                   |
 
 ## IndicatorSpec
 
@@ -63,10 +63,7 @@ Externally tagged booleans:
 - State: `in_position` `bool`, `bars_since_entry` `{ gt: n }`.
 
 ```json
-{ "all": [
-  { "cross_above": ["fast", "slow"] },
-  { "gt": [{ "price": "close" }, 100] }
-] }
+{ "all": [{ "cross_above": ["fast", "slow"] }, { "gt": [{ "price": "close" }, 100] }] }
 ```
 
 ## Sizing, Costs, Risk, Execution

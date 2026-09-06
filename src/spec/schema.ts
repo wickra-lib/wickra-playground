@@ -24,11 +24,7 @@ export type OperandExpr =
 
 /** An integer comparison predicate (externally tagged). */
 export type IntPredicate =
-  | { gt: number }
-  | { lt: number }
-  | { ge: number }
-  | { le: number }
-  | { eq: number }
+  { gt: number } | { lt: number } | { ge: number } | { le: number } | { eq: number }
 
 /** A boolean node (externally tagged, snake_case). */
 export type Condition =
@@ -67,9 +63,7 @@ export type Sizing =
 
 /** Slippage model (internally tagged on `type`). */
 export type Slippage =
-  | { type: 'fixed_bps'; bps: number }
-  | { type: 'spread' }
-  | { type: 'volume_impact'; coef: number }
+  { type: 'fixed_bps'; bps: number } | { type: 'spread' } | { type: 'volume_impact'; coef: number }
 
 export interface Costs {
   maker_bps?: number

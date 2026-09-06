@@ -15,10 +15,10 @@ re-serialization), so the report bytes match exactly.
 
 Pinned artifacts (mirror the constants in `src/runner/python.ts`):
 
-| Artifact | Version | Source |
-|----------|---------|--------|
-| Pyodide runtime | `v0.26.4` | `https://cdn.jsdelivr.net/pyodide/v0.26.4/full/` |
-| `wickra-backtest` wheel | `0.1.0` | Pyodide/emscripten wheel attached to the `wickra-backtest` `v0.1.0` release: `wickra_backtest-0.1.0-cp312-cp312-pyodide_2024_0_wasm32.whl` |
+| Artifact                | Version   | Source                                                                                                                                     |
+| ----------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Pyodide runtime         | `v0.26.4` | `https://cdn.jsdelivr.net/pyodide/v0.26.4/full/`                                                                                           |
+| `wickra-backtest` wheel | `0.1.0`   | Pyodide/emscripten wheel attached to the `wickra-backtest` `v0.1.0` release: `wickra_backtest-0.1.0-cp312-cp312-pyodide_2024_0_wasm32.whl` |
 
 The wheel is a compiled PyO3 extension, so it must be an **emscripten/Pyodide**
 wheel (not a manylinux/macOS/Windows one) built for Pyodide's `pyodide_2024_0`

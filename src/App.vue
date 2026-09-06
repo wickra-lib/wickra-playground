@@ -32,8 +32,8 @@ onMounted(async () => {
   <header>
     <h1>Wickra Playground</h1>
     <p class="muted">
-      One strategy spec, run byte-identical in Rust · JS · Go · Python — live in
-      your browser, zero backend.
+      One strategy spec, run byte-identical in Rust · JS · Go · Python — live in your browser, zero
+      backend.
     </p>
     <p class="mono">
       <template v-if="status === 'loading'">Loading the backtest core…</template>

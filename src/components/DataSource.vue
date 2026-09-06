@@ -101,7 +101,9 @@ watch(
       <button type="button" @click="onBinanceFetch">Fetch</button>
     </div>
 
-    <p class="mono muted">{{ status }}<span v-if="count"> · {{ count }} bars</span></p>
+    <p class="mono muted">
+      {{ status }}<span v-if="count"> · {{ count }} bars</span>
+    </p>
     <p v-if="error" class="status-bad mono">{{ error }}</p>
   </section>
 </template>

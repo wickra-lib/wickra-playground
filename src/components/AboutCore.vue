@@ -11,15 +11,15 @@ const open = ref(false)
     </button>
     <div v-if="open" class="body">
       <p>
-        Every panel wraps the <strong>same deterministic Rust core</strong> through a
-        different binding path — Rust calls it directly, JS calls it over the WASM
-        bundle, and Go drives that same bundle. That is <em>why</em> the output is
-        byte-identical: there is one engine, not four re-implementations.
+        Every panel wraps the <strong>same deterministic Rust core</strong> through a different
+        binding path — Rust calls it directly, JS calls it over the WASM bundle, and Go drives that
+        same bundle. That is <em>why</em> the output is byte-identical: there is one engine, not
+        four re-implementations.
       </p>
       <p class="muted">
-        This is the claim no other TA or backtest library can make. Ports to Python,
-        JS, and Go normally drift in rounding, warmup, and fill logic; here the diff
-        view proves they don't, because there is nothing to drift from.
+        This is the claim no other TA or backtest library can make. Ports to Python, JS, and Go
+        normally drift in rounding, warmup, and fill logic; here the diff view proves they don't,
+        because there is nothing to drift from.
       </p>
     </div>
   </section>

@@ -77,9 +77,7 @@ async function copyProof(): Promise<void> {
       <p v-if="result.identical" class="status-ok big">
         ✓ byte-identical across {{ values.length }} panels — 0 differences
       </p>
-      <p v-else class="status-bad big">
-        ✗ {{ deltas.length }} panel(s) differ from the reference
-      </p>
+      <p v-else class="status-bad big">✗ {{ deltas.length }} panel(s) differ from the reference</p>
 
       <p v-if="proofHash" class="mono proof">proof sha256: {{ proofHash }}</p>
 
@@ -104,12 +102,7 @@ async function copyProof(): Promise<void> {
 
       <p v-if="anyMissing" class="status-bad">One or more panels failed to produce a report.</p>
 
-      <button
-        v-if="result.identical && proofHash"
-        type="button"
-        class="copy"
-        @click="copyProof"
-      >
+      <button v-if="result.identical && proofHash" type="button" class="copy" @click="copyProof">
         {{ copied ? 'Copied ✓' : 'Copy proof' }}
       </button>
     </template>
