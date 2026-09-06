@@ -5,6 +5,7 @@
 org          = "wickra-lib"
 name         = "wickra-playground"
 url          = "https://github.com/wickra-lib/wickra-playground"
+docs_url     = "https://playground.wickra.org"
 homepage     = "https://wickra.org"
 issues_url   = "https://github.com/wickra-lib/wickra-playground/issues"
 security_url = "https://github.com/wickra-lib/wickra-playground/security/advisories/new"

@@ -7,7 +7,7 @@
 [![CodeQL](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/codeql.svg)](https://github.com/wickra-lib/wickra-playground/actions/workflows/codeql.yml)
 [![License: MIT OR Apache-2.0](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/license.svg)](#license)
 [![OpenSSF Scorecard](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/scorecard.svg)](https://scorecard.dev/viewer/?uri=github.com/wickra-lib/wickra-playground)
-[![Docs](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/docs.svg)](https://wickra.org)
+[![Docs](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/docs.svg)](https://playground.wickra.org)
 [![Built with Vue 3 + Vite](https://img.shields.io/badge/built%20with-Vue%203%20%2B%20Vite-42b883?logo=vue.js&logoColor=white)](https://vite.dev)
 [![Zero backend](https://img.shields.io/badge/backend-zero-22c55e)](#how-it-works)
 [![Byte-identical across 4 languages](https://img.shields.io/badge/byte--identical-4%20languages-8b5cf6)](#determinism-is-the-product)
@@ -23,6 +23,8 @@ Python — 100% in your browser, zero backend.**
 > built on the same deterministic backtest engine
 > ([wickra-backtest](https://github.com/wickra-lib/wickra-backtest)) that powers
 > the rest of the stack.
+
+**Run it: [play.wickra.org](https://play.wickra.org).** What it is and why: [playground.wickra.org](https://playground.wickra.org).
 
 Every other TA/backtest library _claims_ cross-language consistency. The
 playground **proves it, live**: you write one `StrategySpec`, and the app runs it
