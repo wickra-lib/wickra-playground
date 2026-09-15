@@ -10,13 +10,14 @@ and the third-party WebAssembly / npm dependencies the site bundles.
 
 ## Supported versions
 
-Until the first stable release, only the latest `0.x` minor line receives
-security fixes.
+Until the first stable release, only the latest version receives security
+fixes. That is `0.1.0`, the version `package.json` declares and the one the
+deployed site is built from.
 
-| Version      | Supported          |
-| ------------ | ------------------ |
-| latest `0.x` | :white_check_mark: |
-| older        | :x:                |
+| Version          | Supported          |
+| ---------------- | ------------------ |
+| `0.1.0` (latest) | :white_check_mark: |
+| older            | :x:                |
 
 ## Reporting a vulnerability
 
