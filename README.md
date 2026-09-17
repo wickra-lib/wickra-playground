@@ -64,9 +64,10 @@ npm run build    # static build into dist/
 npm run test     # the determinism + diff unit tests
 ```
 
-> **Note:** the app depends on `wickra-backtest-wasm`, which is not yet on npm
-> (its release is gated). Until it publishes, `npm install` cannot resolve the
-> lockfile.
+The engines are the published
+[`wickra-backtest-wasm`](https://www.npmjs.com/package/wickra-backtest-wasm) and
+[`wickra-wasm`](https://www.npmjs.com/package/wickra-wasm) packages, at the
+versions `package.json` names; `npm install` is all there is to it. Node 22+.
 
 ## Presets
 

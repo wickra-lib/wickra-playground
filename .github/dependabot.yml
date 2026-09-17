@@ -1,9 +1,10 @@
 version: 2
-# Version-update PRs are paused (open-pull-requests-limit: 0) until the first
-# wickra release: this playground depends on the `wickra-*-wasm` npm packages,
-# which are not published yet, so `npm install`/`npm ci` (and therefore CI)
-# cannot succeed and no dependabot PR can go green. Security updates are
-# unaffected. Restore the limits to 10 once the packages are on npm.
+# Version updates were paused (open-pull-requests-limit: 0) until the first
+# wickra release, because the `wickra-*-wasm` packages this playground depends
+# on were not published and no Dependabot PR could go green. They are: the
+# limits are the family's 10, and the wickra packages sit in their own group
+# so a bump that changes what the playground computes is reviewed against the
+# pinned golden rather than folded into a Vite patch release.
 updates:
   # The Vue 3 + Vite + TypeScript app (root package.json).
   - package-ecosystem: npm
@@ -12,14 +13,17 @@ updates:
       interval: monthly
       time: '06:00'
       timezone: 'Etc/UTC'
-    open-pull-requests-limit: 0
+    open-pull-requests-limit: 10
     cooldown:
       default-days: 7
     commit-message:
       prefix: 'deps(npm)'
     groups:
+      wickra:
+        patterns: ['wickra-wasm', 'wickra-backtest-wasm']
       npm:
         patterns: ['*']
+        exclude-patterns: ['wickra-wasm', 'wickra-backtest-wasm']
 
   # GitHub Actions — keeps the SHA-pinned actions current (Dependabot reads the
   # version comment after each pinned SHA and bumps both together).
@@ -29,7 +33,7 @@ updates:
       interval: monthly
       time: '06:00'
       timezone: 'Etc/UTC'
-    open-pull-requests-limit: 0
+    open-pull-requests-limit: 10
     cooldown:
       default-days: 7
     commit-message:

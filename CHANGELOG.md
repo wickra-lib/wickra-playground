@@ -6,6 +6,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- **`wickra-wasm` 1.0.4 and `wickra-backtest-wasm` 0.1.6.** The playground still
+  resolved `wickra-wasm` 0.9.9 while the library had reached 1.0.4: a 0.x caret
+  is minor-locked, and Dependabot version updates were paused with a note that
+  the `wickra-*-wasm` packages were not published yet -- true once, not now.
+  The pins name the current releases, the lock follows and `vite build`
+  passes. Dependabot runs at the family's limits with the two wickra packages
+  in their own group, so a bump that changes what the playground computes is
+  reviewed against the pinned golden rather than folded into a Vite patch
+  release.
+
 ### Added
 
 - `package-lock.json`. Its absence is why nothing in this repository had ever

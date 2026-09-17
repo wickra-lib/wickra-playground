@@ -15,10 +15,10 @@ import smaCross from './presets/sma_cross.json'
  *
  * Lazy runners (Python/Pyodide) are skipped here — they need a browser-scale
  * runtime this node harness does not host; their equivalence is proven live in
- * the DiffView. The golden hash is blessed on the first green run (write it to
- * `src/__golden__/sma_cross.sha256`) once `wickra-backtest-wasm` is published;
- * until then the WASM-backed runners cannot load and this test is expected to be
- * red — by design, not stubbed green.
+ * the DiffView. The golden hash lives in `src/__golden__/sma_cross.sha256`; it
+ * was blessed on the first green run after `wickra-backtest-wasm` was published,
+ * and a bump of that package that changes the report is re-blessed on purpose,
+ * never by a bot.
  */
 const GOLDEN_FILE = fileURLToPath(new URL('./__golden__/sma_cross.sha256', import.meta.url))
 
