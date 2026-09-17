@@ -18,6 +18,11 @@ updates:
       default-days: 7
     commit-message:
       prefix: 'deps(npm)'
+    # TypeScript 7 no longer exports `typescript/lib/tsc`, which vue-tsc
+    # loads; until vue-tsc supports 7 the type-check would break on the bump.
+    ignore:
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
     groups:
       wickra:
         patterns: ['wickra-wasm', 'wickra-backtest-wasm']
