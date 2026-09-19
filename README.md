@@ -2,15 +2,15 @@
   <a href="https://wickra.org"><img src="https://raw.githubusercontent.com/wickra-lib/.github/main/profile/wickra-banner.webp?v=514-7" alt="Wickra Playground — one strategy spec, run byte-identical in Rust, JS, Go and Python, live in your browser" width="100%"></a>
 </p>
 
-[![Built on Wickra](https://img.shields.io/badge/built%20on-wickra-3b82f6)](https://github.com/wickra-lib/wickra)
+[![Built on Wickra](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/built-on.svg)](https://github.com/wickra-lib/wickra)
 [![CI](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/ci.svg)](https://github.com/wickra-lib/wickra-playground/actions/workflows/ci.yml)
 [![CodeQL](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/codeql.svg)](https://github.com/wickra-lib/wickra-playground/actions/workflows/codeql.yml)
 [![License: MIT OR Apache-2.0](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/license.svg)](#license)
 [![OpenSSF Scorecard](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/scorecard.svg)](https://scorecard.dev/viewer/?uri=github.com/wickra-lib/wickra-playground)
 [![Docs](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/docs.svg)](https://playground.wickra.org)
-[![Built with Vue 3 + Vite](https://img.shields.io/badge/built%20with-Vue%203%20%2B%20Vite-42b883?logo=vue.js&logoColor=white)](https://vite.dev)
-[![Zero backend](https://img.shields.io/badge/backend-zero-22c55e)](#how-it-works)
-[![Byte-identical across 4 languages](https://img.shields.io/badge/byte--identical-4%20languages-8b5cf6)](#determinism-is-the-product)
+[![Built with Vue 3 + Vite](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/vue-vite.svg)](https://vite.dev)
+[![Zero backend](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/zero-backend.svg)](#how-it-works)
+[![Byte-identical across 4 languages](https://raw.githubusercontent.com/wickra-lib/.github/main/profile/badges/wickra-playground/byte-identical.svg)](#determinism-is-the-product)
 
 ---
 
