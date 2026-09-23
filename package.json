@@ -17,8 +17,8 @@
   },
   "dependencies": {
     "vue": "^3.5.0",
-    "wickra-backtest-wasm": "^0.1.7",
-    "wickra-wasm": "^1.0.5"
+    "wickra-backtest-wasm": "^0.1.8",
+    "wickra-wasm": "^1.0.6"
   },
   "devDependencies": {
     "@types/node": "^26.5.1",
