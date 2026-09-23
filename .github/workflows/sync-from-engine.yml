@@ -7,7 +7,7 @@ name: Sync from the engine releases
 # that can work -- the same shape the -site repositories run.
 on:
   schedule:
-    - cron: "43 * * * *" # hourly at :43, clear of refresh-badges at :17
+    - cron: '43 * * * *' # hourly at :43, clear of refresh-badges at :17
   workflow_dispatch:
 
 permissions:
