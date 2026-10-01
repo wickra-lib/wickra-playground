@@ -16,17 +16,17 @@
     "node": ">=22"
   },
   "dependencies": {
-    "vue": "^3.5.0",
+    "vue": "^3.5.43",
     "wickra-backtest-wasm": "^0.1.9",
     "wickra-wasm": "^1.0.6"
   },
   "devDependencies": {
-    "@types/node": "^26.5.1",
+    "@types/node": "^26.6.2",
     "@vitejs/plugin-vue": "^6.0.9",
     "@vue/eslint-config-typescript": "^14.1.0",
-    "eslint": "^10.6.0",
-    "eslint-plugin-vue": "^10.11.0",
-    "prettier": "^3.3.0",
+    "eslint": "^10.11.0",
+    "eslint-plugin-vue": "^10.11.1",
+    "prettier": "^3.9.9",
     "typescript": "^6.0.3",
     "vite": "^8.3.0",
     "vite-plugin-wasm": "^3.6.0",
