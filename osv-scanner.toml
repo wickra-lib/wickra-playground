@@ -1,6 +1,22 @@
 # OSV-Scanner suppressions (VEX record). Consumed by OSV-Scanner and the
 # OpenSSF Scorecard Vulnerabilities check when scanning the committed
-# package-lock.json. Each entry would be an advisory assessed as not affecting
+# package-lock.json. Each entry is an advisory assessed as not affecting
 # wickra-playground.
+
+# braces 3.0.3 in package-lock.json, reached only through the lint toolchain:
+# @vue/eslint-config-typescript 14.9.0 -> fast-glob 3.3.3 -> micromatch 4.0.8
+# -> braces 3.0.3. Every link is on its newest release and the advisory has no
+# patched braces version, so there is nothing to bump to. All four are marked
+# dev in the lock; `npm ls braces --omit=dev` is empty.
 #
-# No suppressions yet.
+# ignoreUntil forces a fresh look: drop the entry once braces ships a fix (or the
+# chain moves off micromatch) and refresh the lock instead.
+[[IgnoredVulns]]
+id = "GHSA-vfj7-8cjw-p6xm"
+ignoreUntil = 2027-01-05
+reason = """
+braces is a dev-only dependency of the eslint configuration and never reaches
+the static site bundle. The flaw is a stack exhaustion on deeply nested brace
+patterns; the only patterns it expands here are the lint globs in this
+repository's own eslint config, never user input. No patched version exists.
+"""
