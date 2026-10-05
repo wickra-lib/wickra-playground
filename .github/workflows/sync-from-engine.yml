@@ -97,5 +97,5 @@ jobs:
         uses: wickra-lib/.github/actions/signed-commit@782bf3d7a8edb80ada87dc7ba9067e2bf5752710 # v1.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          message: "chore: follow the released engine versions"
+          message: 'chore: follow the released engine versions'
           paths: package.json package-lock.json
