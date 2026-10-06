@@ -1,0 +1,174 @@
+name: Build the Pyodide wheel
+
+# The Python panel installs wickra-backtest inside Pyodide, which needs a wheel
+# built for Pyodide's Emscripten platform. wickra-backtest releases no such
+# wheel, and a GitHub release asset could not be fetched from the page anyway
+# (its download host sends no CORS headers). So this repository builds the wheel
+# from the released sdist on PyPI and serves it from its own origin under
+# public/wheels/, pinned in src/runner/pyodide-wheel.json.
+#
+# schedule / dispatch: when wickra-backtest has a newer release than the pinned
+# wheel, or the pinned Pyodide moved to another platform tag, build, prove it
+# (the Python runner must reproduce the golden report byte for byte), and commit
+# the wheel and the manifest signed to the branch it ran on. A report that
+# differs fails the run instead: the golden is re-blessed by a person, never by
+# a bot. pull_request: rebuild the pinned version and run the same proof,
+# committing nothing -- the pipeline is checked before it is trusted.
+on:
+  schedule:
+    - cron: '53 * * * *' # hourly at :53, after sync-from-engine at :43
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/pyodide-wheel.yml
+      - src/runner/pyodide-wheel.json
+      - src/runner/python.ts
+      - src/python.test.ts
+      - public/wheels/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pyodide-wheel-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  wheel:
+    name: Build and prove the wheel
+    runs-on: ubuntu-latest
+    timeout-minutes: 45 # backstop: emsdk + a release build of the extension
+    permissions:
+      contents: write # commits the wheel and the manifest (schedule / dispatch only)
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Decide what to build
+        id: plan
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          manifest=src/runner/pyodide-wheel.json
+          pyodide=$(jq -r .pyodide "$manifest")
+          pinned=$(jq -r .wickra_backtest "$manifest")
+          wheel=$(jq -r .wheel "$manifest")
+          lock=$(curl -fsSL --retry 3 "https://cdn.jsdelivr.net/pyodide/v${pyodide}/full/pyodide-lock.json")
+          python=$(jq -r '.info.python' <<<"$lock" | cut -d. -f1,2)
+          tag="pyemscripten_$(jq -r '.info.abi_version' <<<"$lock")_wasm32"
+          if [ "$EVENT" = pull_request ]; then
+            target=$pinned
+          else
+            release=$(gh api repos/wickra-lib/wickra-backtest/releases/latest -q .tag_name)
+            target=${release#v}
+          fi
+          if ! printf '%s' "$target" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::wickra-backtest version '${target}' is not a plain X.Y.Z; refusing to build it"
+            exit 1
+          fi
+          build=true
+          if [ "$EVENT" != pull_request ] && [ "$target" = "$pinned" ] \
+              && [ -f "public/wheels/$wheel" ] && [[ "$wheel" == *"-${tag}.whl" ]]; then
+            echo "the pinned wheel is wickra-backtest ${pinned} for Pyodide ${pyodide}; nothing to build"
+            build=false
+          fi
+          sdist_url=""
+          sdist_sha256=""
+          if [ "$build" = true ]; then
+            sdist=$(curl -fsSL --retry 3 "https://pypi.org/pypi/wickra-backtest/${target}/json" \
+              | jq -c '[.urls[] | select(.packagetype == "sdist")][0] // empty' || true)
+            if [ -z "$sdist" ]; then
+              echo "wickra-backtest ${target} has no sdist on PyPI yet; the next run picks it up"
+              build=false
+            else
+              sdist_url=$(jq -r .url <<<"$sdist")
+              sdist_sha256=$(jq -r .digests.sha256 <<<"$sdist")
+            fi
+          fi
+          {
+            echo "build=$build"
+            echo "pyodide=$pyodide"
+            echo "python=$python"
+            echo "tag=$tag"
+            echo "target=$target"
+            echo "sdist_url=$sdist_url"
+            echo "sdist_sha256=$sdist_sha256"
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        if: steps.plan.outputs.build == 'true'
+        with:
+          python-version: ${{ steps.plan.outputs.python }}
+
+      - name: Set up pyodide-build, its cross-build environment, Rust and Emscripten
+        if: steps.plan.outputs.build == 'true'
+        env:
+          PYODIDE: ${{ steps.plan.outputs.pyodide }}
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check "pyodide-build==0.39.1"
+          pyodide xbuildenv install "$PYODIDE"
+          toolchain=$(pyodide config get rust_toolchain)
+          rustup toolchain install "$toolchain" --profile minimal --target wasm32-unknown-emscripten
+          echo "RUSTUP_TOOLCHAIN=$toolchain" >> "$GITHUB_ENV"
+          pyodide xbuildenv install-emscripten
+          emsdk_env=$(find "$HOME/.cache/pyodide-build" -path "*/${PYODIDE}/emsdk/emsdk_env.sh" | head -n 1)
+          echo "EMSDK_ENV=$emsdk_env" >> "$GITHUB_ENV"
+
+      - name: Build the wheel from the released sdist
+        if: steps.plan.outputs.build == 'true'
+        env:
+          TARGET: ${{ steps.plan.outputs.target }}
+          TAG: ${{ steps.plan.outputs.tag }}
+          SDIST_URL: ${{ steps.plan.outputs.sdist_url }}
+          SDIST_SHA256: ${{ steps.plan.outputs.sdist_sha256 }}
+        run: |
+          set -euo pipefail
+          # shellcheck disable=SC1090
+          source "$EMSDK_ENV"
+          work=$(mktemp -d)
+          curl -fsSL --retry 3 -o "$work/sdist.tar.gz" "$SDIST_URL"
+          echo "${SDIST_SHA256}  $work/sdist.tar.gz" | sha256sum -c -
+          tar -xzf "$work/sdist.tar.gz" -C "$work"
+          pyodide build "$work/wickra_backtest-${TARGET}" -o "$work/dist"
+          built=$(find "$work/dist" -name "wickra_backtest-${TARGET}-*-${TAG}.whl" | head -n 1)
+          if [ -z "$built" ]; then
+            echo "::error::no ${TAG} wheel for wickra-backtest ${TARGET} in the build output"
+            ls -l "$work/dist"
+            exit 1
+          fi
+          name=$(basename "$built")
+          rm -f public/wheels/*.whl
+          cp "$built" "public/wheels/$name"
+          digest=$(sha256sum "public/wheels/$name" | cut -d' ' -f1)
+          jq --arg v "$TARGET" --arg w "$name" --arg s "$digest" \
+            '.wickra_backtest = $v | .wheel = $w | .sha256 = $s' \
+            src/runner/pyodide-wheel.json > "$work/manifest.json"
+          mv "$work/manifest.json" src/runner/pyodide-wheel.json
+          echo "built ${name} (${digest})"
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        if: steps.plan.outputs.build == 'true'
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Prove the wheel reproduces the golden report
+        if: steps.plan.outputs.build == 'true'
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          npx vitest run src/python.test.ts src/golden.test.ts
+
+      - name: Commit the wheel (signed)
+        if: steps.plan.outputs.build == 'true' && github.event_name != 'pull_request'
+        uses: wickra-lib/.github/actions/signed-commit@782bf3d7a8edb80ada87dc7ba9067e2bf5752710 # v1.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          message: 'chore: build the Pyodide wheel of wickra-backtest ${{ steps.plan.outputs.target }}'
+          paths: public/wheels src/runner/pyodide-wheel.json
+          branch: ${{ github.ref_name }}

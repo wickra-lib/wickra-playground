@@ -20,6 +20,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **The Python panel runs.** It installed a Pyodide wheel from a wickra-backtest
+  release that never shipped one, pinned to 0.1.0, from a download host that
+  sends no CORS headers — so it had never loaded. The playground now builds the
+  wheel itself (`.github/workflows/pyodide-wheel.yml`: `pyodide-build` over the
+  released sdist from PyPI, for the pinned Pyodide 314.0.7), serves it from
+  `/wheels/` on its own origin, and calls the extension's verbatim
+  `_wickra_backtest.run_json`. `src/python.test.ts` boots the same Pyodide in
+  Node, installs the served wheel and requires the golden sha256 the Rust, JS
+  and Go runners produce. The pins live in one manifest,
+  `src/runner/pyodide-wheel.json`; the workflow moves it hourly when
+  wickra-backtest releases, after the same proof.
 - `package-lock.json`. Its absence is why nothing in this repository had ever
   run: every workflow uses `actions/setup-node` with `cache: npm` and then
   `npm ci`, both of which need a lock file, so all 15 CI runs and all 8 deploy

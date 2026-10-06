@@ -13,9 +13,10 @@ import smaCross from './presets/sma_cross.json'
  * sha256 must equal the pinned golden. Byte-identity across bindings is the
  * central claim of the whole playground; the pinned hash is the regression guard.
  *
- * Lazy runners (Python/Pyodide) are skipped here — they need a browser-scale
- * runtime this node harness does not host; their equivalence is proven live in
- * the DiffView. The golden hash lives in `src/__golden__/sma_cross.sha256`; it
+ * Lazy runners are skipped here; the Python (Pyodide) runner has its own proof
+ * against the same golden in python.test.ts, which boots the pinned Pyodide in
+ * Node and installs the served wheel. The golden hash lives in
+ * `src/__golden__/sma_cross.sha256`; it
  * was blessed on the first green run after `wickra-backtest-wasm` was published,
  * and a bump of that package that changes the report is re-blessed on purpose,
  * never by a bot.

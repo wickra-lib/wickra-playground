@@ -13,20 +13,45 @@ WebAssembly — and loads the actual `wickra-backtest` extension. Its
 panels call (`bindings/python/src/lib.rs` returns the report string verbatim, no
 re-serialization), so the report bytes match exactly.
 
-Pinned artifacts (mirror the constants in `src/runner/python.ts`):
+Pinned artifacts — one manifest, `src/runner/pyodide-wheel.json`, read by the
+runner, the test and the build workflow:
 
-| Artifact                | Version   | Source                                                                                                                                     |
-| ----------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| Pyodide runtime         | `v0.26.4` | `https://cdn.jsdelivr.net/pyodide/v0.26.4/full/`                                                                                           |
-| `wickra-backtest` wheel | `0.1.0`   | Pyodide/emscripten wheel attached to the `wickra-backtest` `v0.1.0` release: `wickra_backtest-0.1.0-cp312-cp312-pyodide_2024_0_wasm32.whl` |
+| Artifact                | Version   | Source                                                                                               |
+| ----------------------- | --------- | ---------------------------------------------------------------------------------------------------- |
+| Pyodide runtime         | `314.0.7` | `https://cdn.jsdelivr.net/pyodide/v314.0.7/full/` (Python 3.14, platform `pyemscripten_2026_0`)      |
+| `wickra-backtest` wheel | `0.2.0`   | `/wheels/wickra_backtest-0.2.0-cp39-abi3-pyemscripten_2026_0_wasm32.whl`, served by this site itself |
 
-The wheel is a compiled PyO3 extension, so it must be an **emscripten/Pyodide**
-wheel (not a manylinux/macOS/Windows one) built for Pyodide's `pyodide_2024_0`
-platform and `cp312` ABI. Pyodide can only load matching wheels. Until that
-emscripten wheel is built and attached to the release, the Python panel errors at
-load time by design — there is no stub or fake fallback. When the wheel ships,
-bump `WICKRA_BACKTEST_VERSION` in `src/runner/python.ts` and the table above
-together.
+The wheel is a compiled PyO3 extension, so it must be an **Emscripten** wheel for
+Pyodide's platform (`pyemscripten_<abi>_wasm32`), not a manylinux/macOS/Windows
+one. wickra-backtest does not release such a wheel, and a GitHub release asset
+could not be fetched from the page anyway — its download host sends no CORS
+headers. So `.github/workflows/pyodide-wheel.yml` builds it here:
+
+- **When:** hourly, and on demand. It builds when wickra-backtest has a newer
+  release than the pinned wheel, or when the pinned Pyodide uses another
+  platform tag than the wheel carries.
+- **How:** `pyodide-build` with the cross-build environment of the pinned
+  Pyodide, the Rust toolchain and Emscripten version that environment names,
+  over the released **sdist from PyPI** (its sha256 checked against PyPI's).
+- **Proof:** `src/python.test.ts` boots the same Pyodide version in Node,
+  installs the built wheel and requires the golden sha256 — the bytes the Rust,
+  JS and Go runners produce. A report that differs fails the run; the golden is
+  re-blessed by a person, never by the bot.
+- **Then:** the wheel goes to `public/wheels/` and the manifest takes its
+  version, file name and sha256, in one signed commit. The page installs it with
+  micropip from its own origin, so the Content-Security-Policy needs no
+  third-party host for it.
+
+The panel calls the compiled `_wickra_backtest.run_json`, which returns the
+core's report string verbatim. The package's public `wickra_backtest.run_json`
+returns a dict (`json.loads` for Python callers), and serializing that again
+would not reproduce the core's bytes.
+
+**Moving Pyodide:** change `pyodide` in the manifest on a branch and run the
+workflow there (`workflow_dispatch`); it rebuilds the wheel for the new platform
+and commits it to that branch. The wheel build is not bit-reproducible (paths are
+embedded), which is why the manifest records the sha256 of the file it serves
+rather than expecting a fixed one.
 
 ## Go (via WASM core)
 

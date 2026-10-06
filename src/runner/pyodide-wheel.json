@@ -1,0 +1,6 @@
+{
+  "pyodide": "314.0.7",
+  "wickra_backtest": "0.2.0",
+  "wheel": "wickra_backtest-0.2.0-cp39-abi3-pyemscripten_2026_0_wasm32.whl",
+  "sha256": "83f82de26fd864751c6fdb279e6e33bace29cca5f9c437bbecfe53837be9fc0e"
+}
