@@ -25,6 +25,7 @@ on:
       - src/runner/pyodide-wheel.json
       - src/runner/python.ts
       - src/python.test.ts
+      - .github/requirements/pyodide-build.txt
       - public/wheels/**
 
 permissions:
@@ -110,7 +111,7 @@ jobs:
           PYODIDE: ${{ steps.plan.outputs.pyodide }}
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check "pyodide-build==0.39.1"
+          python -m pip install --disable-pip-version-check --require-hashes -r .github/requirements/pyodide-build.txt
           pyodide xbuildenv install "$PYODIDE"
           toolchain=$(pyodide config get rust_toolchain)
           rustup toolchain install "$toolchain" --profile minimal --target wasm32-unknown-emscripten

@@ -30,9 +30,11 @@ headers. So `.github/workflows/pyodide-wheel.yml` builds it here:
 - **When:** hourly, and on demand. It builds when wickra-backtest has a newer
   release than the pinned wheel, or when the pinned Pyodide uses another
   platform tag than the wheel carries.
-- **How:** `pyodide-build` with the cross-build environment of the pinned
-  Pyodide, the Rust toolchain and Emscripten version that environment names,
-  over the released **sdist from PyPI** (its sha256 checked against PyPI's).
+- **How:** `pyodide-build` (installed `--require-hashes` from
+  `.github/requirements/pyodide-build.txt`) with the cross-build environment of
+  the pinned Pyodide, the Rust toolchain and Emscripten version that environment
+  names, over the released **sdist from PyPI** (its sha256 checked against
+  PyPI's).
 - **Proof:** `src/python.test.ts` boots the same Pyodide version in Node,
   installs the built wheel and requires the golden sha256 — the bytes the Rust,
   JS and Go runners produce. A report that differs fails the run; the golden is

@@ -1,0 +1,4 @@
+# Build tool of .github/workflows/pyodide-wheel.yml: builds the wickra-backtest
+# Pyodide wheel from its released sdist. The hash-locked pyodide-build.txt is
+# generated from this file; regenerate both together.
+pyodide-build==0.39.1

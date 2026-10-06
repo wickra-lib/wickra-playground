@@ -30,6 +30,23 @@ updates:
         patterns: ['*']
         exclude-patterns: ['wickra-wasm', 'wickra-backtest-wasm']
 
+  # The hash-locked build tool of pyodide-wheel.yml (pyodide-build and its
+  # dependencies); regenerate the .txt from the .in when it moves.
+  - package-ecosystem: pip
+    directory: '/.github/requirements'
+    schedule:
+      interval: monthly
+      time: '06:00'
+      timezone: 'Etc/UTC'
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: 'deps(pip)'
+    groups:
+      pyodide-build:
+        patterns: ['*']
+
   # GitHub Actions — keeps the SHA-pinned actions current (Dependabot reads the
   # version comment after each pinned SHA and bumps both together).
   - package-ecosystem: github-actions
