@@ -38,7 +38,7 @@ concurrency:
 jobs:
   wheel:
     name: Build and prove the wheel
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 45 # backstop: emsdk + a release build of the extension
     permissions:
       contents: write # commits the wheel and the manifest (schedule / dispatch only)
