@@ -21,9 +21,9 @@ cattrs==26.2.1 \
     # via
     #   pyodide-build
     #   pyodide-lock
-certifi==2026.7.22 \
-    --hash=sha256:62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775 \
-    --hash=sha256:741e2c3b351ddf169a738da9f2c048608ff7f2c5cc02f1ebc6b118bb090d5d55
+certifi==2026.10.19 \
+    --hash=sha256:035c1e85572b141bf1c3a3eff0e33a8eb74917522f2559075ff8d2fea780a1ae \
+    --hash=sha256:42d35340cc5b9ba78e818ddbff0c5b1c2b779de448a340fd1b989f5fa8670e1b
     # via requests
 charset-normalizer==3.5.2 \
     --hash=sha256:01077390b03f7988f11d700a2194e69b119741a86b1a638b1db88891e3eced8e \
@@ -253,7 +253,7 @@ pygments==2.21.0 \
 pyodide-build==0.39.1 \
     --hash=sha256:80ee9e5e11ff0b4b97c6b170fb72da1293874e4a47e42324a505a7bc42d331e7 \
     --hash=sha256:c0882f7bf945c20dd60f7ceb6b186bde419c9fb5a3961533ba37a22ffaac1d6c
-    # via -r .github/requirements/pyodide-build.in
+    # via -r pyodide-build.in
 pyodide-cli==0.5.0 \
     --hash=sha256:14df0797e791558b6976d4612f9df9619334f8914bfe3efbdd22e3886f5275b7 \
     --hash=sha256:24c02736f1d6c99396f5e9330fd30bd98db88cf49ef059b62b025fa1f5f6e29c
