@@ -16,16 +16,17 @@ re-serialization), so the report bytes match exactly.
 Pinned artifacts — one manifest, `src/runner/pyodide-wheel.json`, read by the
 runner, the test and the build workflow:
 
-| Artifact                | Version   | Source                                                                                               |
-| ----------------------- | --------- | ---------------------------------------------------------------------------------------------------- |
-| Pyodide runtime         | `314.0.7` | `https://cdn.jsdelivr.net/pyodide/v314.0.7/full/` (Python 3.14, platform `pyemscripten_2026_0`)      |
-| `wickra-backtest` wheel | `0.2.0`   | `/wheels/wickra_backtest-0.2.0-cp39-abi3-pyemscripten_2026_0_wasm32.whl`, served by this site itself |
+| Artifact                | Version   | Source                                                                                          |
+| ----------------------- | --------- | ----------------------------------------------------------------------------------------------- |
+| Pyodide runtime         | `314.0.7` | `https://cdn.jsdelivr.net/pyodide/v314.0.7/full/` (Python 3.14, platform `pyemscripten_2026_0`) |
+| `wickra-backtest` wheel | manifest  | `/wheels/<wheel>`, served by this site itself; the asset of the release the manifest names      |
 
 The wheel is a compiled PyO3 extension, so it must be an **Emscripten** wheel for
 Pyodide's platform (`pyemscripten_<abi>_wasm32`), not a manylinux/macOS/Windows
 one. wickra-backtest does not release such a wheel, and a GitHub release asset
 could not be fetched from the page anyway — its download host sends no CORS
-headers. So `.github/workflows/pyodide-wheel.yml` builds it here:
+headers. So `.github/workflows/pyodide-wheel.yml` builds it here, and the site
+serves it from its own origin:
 
 - **When:** hourly, and on demand. It builds when wickra-backtest has a newer
   release than the pinned wheel, or when the pinned Pyodide uses another
@@ -39,10 +40,18 @@ headers. So `.github/workflows/pyodide-wheel.yml` builds it here:
   installs the built wheel and requires the golden sha256 — the bytes the Rust,
   JS and Go runners produce. A report that differs fails the run; the golden is
   re-blessed by a person, never by the bot.
-- **Then:** the wheel goes to `public/wheels/` and the manifest takes its
-  version, file name and sha256, in one signed commit. The page installs it with
-  micropip from its own origin, so the Content-Security-Policy needs no
-  third-party host for it.
+- **Then:** the wheel becomes the asset of its own release, tagged
+  `pyodide-wheel-<version>-<first 12 hex of its sha256>` — a prerelease, never
+  marked latest, and immutable once published. The test runs again against the
+  published asset, and the manifest takes the version, file name, sha256 and
+  release tag in one signed commit.
+- **Served:** the wheel is not committed (a binary in the tree is what OpenSSF
+  Scorecard's Binary-Artifacts check flags). `vite build` — the Cloudflare Pages
+  build, CI and local builds alike — and `src/python.test.ts` download it from
+  that release into `public/wheels/` and refuse it unless its sha256 is the
+  pinned one (`scripts/pyodide-wheel.ts`); the download runs at build time, where
+  CORS does not apply. The page installs it with micropip from its own origin,
+  so the Content-Security-Policy needs no third-party host for it.
 
 The panel calls the compiled `_wickra_backtest.run_json`, which returns the
 core's report string verbatim. The package's public `wickra_backtest.run_json`
@@ -50,10 +59,12 @@ returns a dict (`json.loads` for Python callers), and serializing that again
 would not reproduce the core's bytes.
 
 **Moving Pyodide:** change `pyodide` in the manifest on a branch and run the
-workflow there (`workflow_dispatch`); it rebuilds the wheel for the new platform
-and commits it to that branch. The wheel build is not bit-reproducible (paths are
-embedded), which is why the manifest records the sha256 of the file it serves
-rather than expecting a fixed one.
+workflow there (`workflow_dispatch`); it rebuilds the wheel for the new
+platform, publishes it as its own release and commits the manifest to that
+branch. The wheel build is not bit-reproducible (paths are embedded), which is
+why the manifest records the sha256 of the file it serves rather than expecting
+a fixed one, and why the release tag carries that sha256: two builds of one
+version never contend for one tag.
 
 ## Go (via WASM core)
 

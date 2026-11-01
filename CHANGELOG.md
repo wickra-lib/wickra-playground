@@ -8,6 +8,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **The Pyodide wheel is no longer committed.** `public/wheels/` held the
+  wheel the Python panel installs, and OpenSSF Scorecard's Binary-Artifacts
+  check flagged it again under every new file name. `pyodide-wheel.yml` now
+  publishes each build as the asset of its own release (a prerelease tagged
+  `pyodide-wheel-<version>-<sha256 prefix>`, never marked latest), proves the
+  published asset against the golden report, and commits only the manifest,
+  which gained the release tag. `vite build` and `src/python.test.ts` download
+  the wheel from that release and refuse it unless its sha256 is the pinned
+  one (`scripts/pyodide-wheel.ts`), so the page still installs it from its own
+  origin.
 - **`wickra-wasm` 1.0.4 and `wickra-backtest-wasm` 0.1.6.** The playground still
   resolved `wickra-wasm` 0.9.9 while the library had reached 1.0.4: a 0.x caret
   is minor-locked, and Dependabot version updates were paused with a note that

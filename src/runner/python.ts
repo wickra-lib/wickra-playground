@@ -14,9 +14,11 @@ import type { Runner } from './types'
  * docs/CROSS_LANGUAGE.md):
  *  - Pyodide runtime: from jsDelivr, at the pinned version.
  *  - wickra-backtest wheel: the Pyodide (`pyemscripten`) wheel built from the
- *    released sdist by `.github/workflows/pyodide-wheel.yml` and served from
- *    this site's own `/wheels/` — same origin, so no CORS and no third-party
- *    host in the Content-Security-Policy.
+ *    released sdist by `.github/workflows/pyodide-wheel.yml`, published as the
+ *    asset of its own release, fetched and sha256-checked at build time
+ *    (`scripts/pyodide-wheel.ts`) and served from this site's own `/wheels/` —
+ *    same origin, so no CORS and no third-party host in the
+ *    Content-Security-Policy.
  */
 export const PYODIDE_VERSION = pinned.pyodide
 export const PYODIDE_INDEX_URL = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`

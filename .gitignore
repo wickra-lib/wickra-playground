@@ -13,3 +13,7 @@ dist-ssr/
 .DS_Store
 .vscode/*
 !.vscode/extensions.json
+
+# The Pyodide wheel: published as a release asset by pyodide-wheel.yml and
+# downloaded here (sha256-checked) by vite build and the tests, never committed.
+public/wheels/
