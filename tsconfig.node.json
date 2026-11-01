@@ -12,5 +12,5 @@
     "emitDeclarationOnly": true,
     "outDir": "./node_modules/.tmp/tsconfig-node-out"
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts", "scripts/**/*.ts"]
 }

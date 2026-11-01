@@ -54,6 +54,9 @@ construction, not by coincidence; the diff view just makes that visible. See
 
 ## Build & deploy
 
-`npm run build` type-checks (`vue-tsc`) and emits a static `dist/`. `deploy.yml`
-publishes `dist/` to Cloudflare Pages via `wrangler` when the deploy secrets are
-present; otherwise it just builds (green).
+`npm run build` type-checks (`vue-tsc`) and emits a static `dist/`. Before Vite
+copies `public/`, it downloads the pinned Pyodide wheel from its release into
+`public/wheels/` and checks its sha256 (`scripts/pyodide-wheel.ts`, see
+[CROSS_LANGUAGE.md](CROSS_LANGUAGE.md)). Deployment is the Cloudflare Pages Git
+integration, which runs that build on every push; no deploy workflow or
+repository secret is involved.

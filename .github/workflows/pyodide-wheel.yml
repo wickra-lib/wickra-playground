@@ -5,15 +5,24 @@ name: Build the Pyodide wheel
 # wheel, and a GitHub release asset could not be fetched from the page anyway
 # (its download host sends no CORS headers). So this repository builds the wheel
 # from the released sdist on PyPI and serves it from its own origin under
-# public/wheels/, pinned in src/runner/pyodide-wheel.json.
+# /wheels/, pinned in src/runner/pyodide-wheel.json.
+#
+# The wheel is not committed: a binary in the tree is what Scorecard's
+# Binary-Artifacts check flags, and a dismissal does not survive the next file
+# name. Each build is the asset of its own release instead, tagged
+# pyodide-wheel-<version>-<first 12 hex of its sha256> and never marked latest.
+# vite build and the tests download it into public/wheels/ and check its sha256
+# against the manifest (scripts/pyodide-wheel.ts) -- at build time, where CORS
+# does not apply -- so the page still installs it from its own origin.
 #
 # schedule / dispatch: when wickra-backtest has a newer release than the pinned
 # wheel, or the pinned Pyodide moved to another platform tag, build, prove it
-# (the Python runner must reproduce the golden report byte for byte), and commit
-# the wheel and the manifest signed to the branch it ran on. A report that
-# differs fails the run instead: the golden is re-blessed by a person, never by
-# a bot. pull_request: rebuild the pinned version and run the same proof,
-# committing nothing -- the pipeline is checked before it is trusted.
+# (the Python runner must reproduce the golden report byte for byte), publish
+# it, prove the published asset the same way, and commit the manifest signed to
+# the branch it ran on. A report that differs fails the run instead: the golden
+# is re-blessed by a person, never by a bot. pull_request: rebuild the pinned
+# version and run the same proof, publishing and committing nothing -- the
+# pipeline is checked before it is trusted.
 on:
   schedule:
     - cron: '53 * * * *' # hourly at :53, after sync-from-engine at :43
@@ -25,8 +34,8 @@ on:
       - src/runner/pyodide-wheel.json
       - src/runner/python.ts
       - src/python.test.ts
+      - scripts/pyodide-wheel.ts
       - .github/requirements/pyodide-build.txt
-      - public/wheels/**
 
 permissions:
   contents: read
@@ -41,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45 # backstop: emsdk + a release build of the extension
     permissions:
-      contents: write # commits the wheel and the manifest (schedule / dispatch only)
+      contents: write # publishes the wheel's release and commits the manifest (schedule / dispatch only)
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -58,6 +67,7 @@ jobs:
           pyodide=$(jq -r .pyodide "$manifest")
           pinned=$(jq -r .wickra_backtest "$manifest")
           wheel=$(jq -r .wheel "$manifest")
+          wheel_release=$(jq -r '.release // empty' "$manifest")
           lock=$(curl -fsSL --retry 3 "https://cdn.jsdelivr.net/pyodide/v${pyodide}/full/pyodide-lock.json")
           python=$(jq -r '.info.python' <<<"$lock" | cut -d. -f1,2)
           tag="pyemscripten_$(jq -r '.info.abi_version' <<<"$lock")_wasm32"
@@ -71,10 +81,18 @@ jobs:
             echo "::error::wickra-backtest version '${target}' is not a plain X.Y.Z; refusing to build it"
             exit 1
           fi
+          # The pinned wheel stands when it is the version to build, carries the
+          # platform tag of the pinned Pyodide, and its release is published
+          # with the wheel as an asset.
+          published=""
+          if [ -n "$wheel_release" ]; then
+            published=$(gh release view "$wheel_release" --repo "$GITHUB_REPOSITORY" \
+              --json isDraft,assets --jq 'select(.isDraft | not) | .assets[].name' 2>/dev/null || true)
+          fi
           build=true
           if [ "$EVENT" != pull_request ] && [ "$target" = "$pinned" ] \
-              && [ -f "public/wheels/$wheel" ] && [[ "$wheel" == *"-${tag}.whl" ]]; then
-            echo "the pinned wheel is wickra-backtest ${pinned} for Pyodide ${pyodide}; nothing to build"
+              && [[ "$wheel" == *"-${tag}.whl" ]] && grep -qxF "$wheel" <<<"$published"; then
+            echo "the pinned wheel is wickra-backtest ${pinned} for Pyodide ${pyodide}, published as ${wheel_release}; nothing to build"
             build=false
           fi
           sdist_url=""
@@ -121,6 +139,7 @@ jobs:
           echo "EMSDK_ENV=$emsdk_env" >> "$GITHUB_ENV"
 
       - name: Build the wheel from the released sdist
+        id: build
         if: steps.plan.outputs.build == 'true'
         env:
           TARGET: ${{ steps.plan.outputs.target }}
@@ -143,13 +162,20 @@ jobs:
             exit 1
           fi
           name=$(basename "$built")
+          mkdir -p public/wheels
           rm -f public/wheels/*.whl
           cp "$built" "public/wheels/$name"
           digest=$(sha256sum "public/wheels/$name" | cut -d' ' -f1)
-          jq --arg v "$TARGET" --arg w "$name" --arg s "$digest" \
-            '.wickra_backtest = $v | .wheel = $w | .sha256 = $s' \
+          release="pyodide-wheel-${TARGET}-${digest:0:12}"
+          jq --arg v "$TARGET" --arg w "$name" --arg s "$digest" --arg r "$release" \
+            '.wickra_backtest = $v | .wheel = $w | .sha256 = $s | .release = $r' \
             src/runner/pyodide-wheel.json > "$work/manifest.json"
           mv "$work/manifest.json" src/runner/pyodide-wheel.json
+          {
+            echo "wheel=$name"
+            echo "sha256=$digest"
+            echo "release=$release"
+          } >> "$GITHUB_OUTPUT"
           echo "built ${name} (${digest})"
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -165,11 +191,53 @@ jobs:
           npm ci --no-audit --no-fund
           npx vitest run src/python.test.ts src/golden.test.ts
 
-      - name: Commit the wheel (signed)
+      - name: Publish the wheel as a release
+        if: steps.plan.outputs.build == 'true' && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET: ${{ steps.plan.outputs.target }}
+          PYODIDE: ${{ steps.plan.outputs.pyodide }}
+          WHEEL: ${{ steps.build.outputs.wheel }}
+          SHA256: ${{ steps.build.outputs.sha256 }}
+          RELEASE: ${{ steps.build.outputs.release }}
+        run: |
+          set -euo pipefail
+          # Releases are immutable once published and the tag carries the
+          # wheel's sha256 prefix, so a published release under this tag already
+          # holds these bytes: a rerun after a failed commit reuses it, and the
+          # next step proves the asset either way. A draft is what an
+          # interrupted publish leaves behind; finish it.
+          state=$(gh release view "$RELEASE" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft 2>/dev/null || echo missing)
+          case "$state" in
+            missing)
+              notes="The Pyodide (pyemscripten) wheel of wickra-backtest ${TARGET} for Pyodide ${PYODIDE}, built by pyodide-wheel.yml from the released sdist on PyPI and proven against the golden report. The playground's build downloads it and requires sha256 ${SHA256}, pinned in src/runner/pyodide-wheel.json. A build input of the site, not a release of the playground."
+              gh release create "$RELEASE" "public/wheels/$WHEEL" --repo "$GITHUB_REPOSITORY" \
+                --target "$GITHUB_SHA" --prerelease --latest=false \
+                --title "Pyodide wheel: wickra-backtest ${TARGET}" --notes "$notes"
+              ;;
+            true)
+              gh release upload "$RELEASE" "public/wheels/$WHEEL" --repo "$GITHUB_REPOSITORY" --clobber
+              gh release edit "$RELEASE" --repo "$GITHUB_REPOSITORY" --draft=false --prerelease --latest=false
+              ;;
+            *)
+              echo "release ${RELEASE} is already published"
+              ;;
+          esac
+
+      - name: Prove the published wheel
+        if: steps.plan.outputs.build == 'true' && github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          # Drop the local build so the test fetches the asset the way the
+          # site's build does, checks its sha256 and reproduces the golden.
+          rm -f public/wheels/*.whl
+          npx vitest run src/python.test.ts
+
+      - name: Commit the manifest (signed)
         if: steps.plan.outputs.build == 'true' && github.event_name != 'pull_request'
         uses: wickra-lib/.github/actions/signed-commit@da1bd395c27f33dbed632c8e4e48e12f85394858 # v1.1.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           message: 'chore: build the Pyodide wheel of wickra-backtest ${{ steps.plan.outputs.target }}'
-          paths: public/wheels src/runner/pyodide-wheel.json
+          paths: src/runner/pyodide-wheel.json
           branch: ${{ github.ref_name }}

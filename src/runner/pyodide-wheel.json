@@ -2,5 +2,6 @@
   "pyodide": "314.0.7",
   "wickra_backtest": "0.2.1",
   "wheel": "wickra_backtest-0.2.1-cp39-abi3-pyemscripten_2026_0_wasm32.whl",
-  "sha256": "75216edc9df1df48c5d4e3fbc1c4134f5a78e87bc7e74a73be56a94b5585e838"
+  "sha256": "75216edc9df1df48c5d4e3fbc1c4134f5a78e87bc7e74a73be56a94b5585e838",
+  "release": "pyodide-wheel-0.2.1-75216edc9df1"
 }
