@@ -3,20 +3,28 @@
 # package-lock.json. Each entry is an advisory assessed as not affecting
 # wickra-playground.
 
-# braces 3.0.3 in package-lock.json, reached only through the lint toolchain:
-# @vue/eslint-config-typescript 14.9.0 -> fast-glob 3.3.3 -> micromatch 4.0.8
-# -> braces 3.0.3. Every link is on its newest release and the advisory has no
-# patched braces version, so there is nothing to bump to. All four are marked
-# dev in the lock; `npm ls braces --omit=dev` is empty.
+# GHSA-vfj7-8cjw-p6xm (braces 3.0.3, reached through the lint toolchain) was
+# listed here as dev-only with no patched version. The advisory was withdrawn
+# on 2026-10-23, so it no longer describes anything, and the entry was removed.
+
+# minimatch 10.2.6 in package-lock.json, reached only through the lint
+# toolchain: eslint 10.11.0, @eslint/config-array 0.23.5 and
+# @typescript-eslint/typescript-estree 8.69.0. The advisory is fixed only in
+# minimatch 11.0.1, and every one of them -- on its newest release too (eslint
+# 10.14.0, typescript-estree 8.72.1) -- declares the 10.x line, so there is
+# nothing to bump to. All are marked dev in the lock; `npm ls minimatch
+# --omit=dev` is empty.
 #
-# ignoreUntil forces a fresh look: drop the entry once braces ships a fix (or the
-# chain moves off micromatch) and refresh the lock instead.
+# ignoreUntil forces a fresh look: drop the entry once the lint toolchain moves
+# to minimatch 11 and refresh the lock instead.
 [[IgnoredVulns]]
-id = "GHSA-vfj7-8cjw-p6xm"
+id = "GHSA-g3hv-75wg-m249"
 ignoreUntil = 2027-01-05
 reason = """
-braces is a dev-only dependency of the eslint configuration and never reaches
-the static site bundle. The flaw is a stack exhaustion on deeply nested brace
-patterns; the only patterns it expands here are the lint globs in this
-repository's own eslint config, never user input. No patched version exists.
+minimatch is a dev-only dependency of the eslint configuration and never reaches
+the static site bundle. The flaw is CPU and memory amplification in
+firstPhasePreProcess(), which minimatch runs only at optimizationLevel 2 or
+above; nothing in the dependency tree sets that option, so every caller runs at
+the default of 1. The only patterns it matches here are the lint globs in this
+repository's own eslint config, never user input. No patched 10.x exists.
 """
