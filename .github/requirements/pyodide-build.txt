@@ -250,9 +250,9 @@ pygments==2.21.0 \
     --hash=sha256:2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9 \
     --hash=sha256:610ca751c9bc2492b38eb9a38a7fbc93edbbb2d7182edaf34e66ae493dee5c8c
     # via rich
-pyodide-build==0.39.1 \
-    --hash=sha256:80ee9e5e11ff0b4b97c6b170fb72da1293874e4a47e42324a505a7bc42d331e7 \
-    --hash=sha256:c0882f7bf945c20dd60f7ceb6b186bde419c9fb5a3961533ba37a22ffaac1d6c
+pyodide-build==0.39.2 \
+    --hash=sha256:77cc3d679c0bec5ce6798ff941491af320b52c2d522ea50415d9dd8d376c907b \
+    --hash=sha256:9041cbb02e561a253674a42aaf90a86c32a11867aee46a9d41d049173604f1d9
     # via -r pyodide-build.in
 pyodide-cli==0.5.0 \
     --hash=sha256:14df0797e791558b6976d4612f9df9619334f8914bfe3efbdd22e3886f5275b7 \
