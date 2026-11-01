@@ -16,22 +16,22 @@
     "node": ">=22"
   },
   "dependencies": {
-    "vue": "^3.5.43",
+    "vue": "^3.5.44",
     "wickra-backtest-wasm": "^0.2.1",
     "wickra-wasm": "^2.1.1"
   },
   "devDependencies": {
-    "@types/node": "^26.6.3",
-    "@vitejs/plugin-vue": "^6.0.9",
+    "@types/node": "^26.6.5",
+    "@vitejs/plugin-vue": "^6.0.10",
     "@vue/eslint-config-typescript": "^14.1.0",
-    "eslint": "^10.11.0",
+    "eslint": "^10.13.0",
     "eslint-plugin-vue": "^10.11.1",
-    "prettier": "^3.9.9",
+    "prettier": "^3.9.10",
     "pyodide": "314.0.7",
     "typescript": "^6.0.3",
     "vite": "^8.3.5",
     "vite-plugin-wasm": "^3.6.0",
     "vitest": "^5.0.5",
-    "vue-tsc": "^3.3.11"
+    "vue-tsc": "^3.3.13"
   }
 }
