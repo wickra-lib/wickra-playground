@@ -24,7 +24,7 @@
     "@types/node": "^26.6.5",
     "@vitejs/plugin-vue": "^6.0.10",
     "@vue/eslint-config-typescript": "^14.1.0",
-    "eslint": "^10.13.0",
+    "eslint": "^10.15.0",
     "eslint-plugin-vue": "^10.11.1",
     "prettier": "^3.9.10",
     "pyodide": "314.0.7",
