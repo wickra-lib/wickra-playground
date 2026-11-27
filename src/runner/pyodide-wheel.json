@@ -1,7 +1,7 @@
 {
   "pyodide": "314.0.7",
-  "wickra_backtest": "0.2.2",
-  "wheel": "wickra_backtest-0.2.2-cp39-abi3-pyemscripten_2026_0_wasm32.whl",
-  "sha256": "972e086d21077b08c53b9df2e9fb3e75c79927a5a9883f5be26827e56623c56b",
-  "release": "pyodide-wheel-0.2.2-972e086d2107"
+  "wickra_backtest": "0.2.3",
+  "wheel": "wickra_backtest-0.2.3-cp39-abi3-pyemscripten_2026_0_wasm32.whl",
+  "sha256": "1231616791f2fcd4d85cc493a9f6adaea8a8d4509a0e1583bc2767bdc5182553",
+  "release": "pyodide-wheel-0.2.3-1231616791f2"
 }
